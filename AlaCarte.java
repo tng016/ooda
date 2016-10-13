@@ -17,4 +17,8 @@ public class AlaCarte extends FoodItem{
 	public char getType(){
 		return type;
 	}
+	
+	public String getName(){
+		return name;
+	}
 }
