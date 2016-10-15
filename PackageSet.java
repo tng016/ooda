@@ -11,9 +11,11 @@ public class PackageSet extends FoodItem{
 	@Override
 	public void getDetails() {
 		// TODO Auto-generated method stub
+		System.out.println(this.name);
 		for(AlaCarte item:set){
-			System.out.println(item.name +"\t"+ item.type +"\t"+ item.description +"\t"+ item.price);
+			System.out.println(item.name +"\t"+ item.description);
 		}
+		System.out.println("Price =" + this.price);
 	}
 	
 }

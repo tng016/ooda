@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
-	ArrayList<FoodItem> mains = new ArrayList<>();;
-	private ArrayList<FoodItem> drinks = new ArrayList<>();;
-	private ArrayList<FoodItem> desserts = new ArrayList<>();;
-	private ArrayList<FoodItem> packages = new ArrayList<>();;
+	protected ArrayList<FoodItem> mains = new ArrayList<>();;
+	protected ArrayList<FoodItem> drinks = new ArrayList<>();;
+	protected ArrayList<FoodItem> desserts = new ArrayList<>();;
+	protected ArrayList<FoodItem> packages = new ArrayList<>();;
 	
 	//constructor for empty menu
 	public Menu (){
@@ -16,7 +16,7 @@ public class Menu {
 	//constructor for a pre-saved menu
 	public Menu(FoodItem[] savedMenu){
 		for (int i = 0; i<savedMenu.length; i++)
-			addItem(savedMenu[i]);
+			createItem(savedMenu[i]);
 	}
 	
 	public void printMenu(){
@@ -47,34 +47,129 @@ public class Menu {
 		}
 	}
 	
+	public void addItem(){
+		Scanner sc = new Scanner(System.in);
+		
+		System.out.println("Would you like to add a \n(1) Main\n(2) Dessert\n(3) Drink\n(4) Package Set");
+		//sc.nextLine();
+		int input = sc.nextInt();
+		AlaCarte[] temp = new AlaCarte[3];
+		char type='A';
+		String cases = null;
+		switch(input){
+		case 1:
+			type = 'M';
+			cases = "Main Course";
+			break;
+		case 2:
+			type = 'D';
+			cases = "Dessert";
+			break;
+		case 3:
+			type = 'R';
+			cases = "Drink";
+			break;
+		case 4:
+			cases = "Package";
+			temp = new AlaCarte[3];
+			for (int i=1;i<4;i++){
+				printMenu();
+				System.out.println("Choose an AlaCarte number " + i +" for the package");
+				int j = sc.nextInt();
+				AlaCarte a =(AlaCarte) returnItem(j);
+				temp[i-1] = a;
+			}
+			break;
+		default:
+			//throw new ArrayIndexOutOfBoundsException();
+		}
+		sc.nextLine();//clear buffer
+		System.out.println("What is the name of the new " + cases + "?");
+		String name = sc.nextLine();
+		System.out.println("What is the description of the new " + cases + "?");
+		String description = sc.nextLine();
+		System.out.println("What is the price of the new " + cases + "?");
+		float price = sc.nextFloat();
+		if (input == 4)
+			createItem(new PackageSet(name,temp,description,price));
+		else
+			createItem(new AlaCarte(name,type,description,price));
+		//sc.close();
+	}
+	
 	public void addItem(FoodItem i){
+		if (i instanceof AlaCarte)
+			returnArray(i).add(i);
+		else
+			packages.add(i);
+	}
+	
+	public void createItem(FoodItem i){
 		returnArray(i).add(i);
 	}
 	
-	public void removeItem(FoodItem i){
-		returnArray(i).remove(i);
+	public void removeItem(){
+		printMenu();
+		System.out.println("Which item would you like to remove?");
+		Scanner sc = new Scanner(System.in);
+		int i = sc.nextInt();
+		FoodItem temp =returnItem(i);
+		returnArray(temp).remove(temp);
 	}
 	
 	public void updateItem(){
 		printMenu();
-		System.out.println("Select which A la Carte item you would like to update");
+		System.out.println("Select which item you would like to update");
 		Scanner sc = new Scanner(System.in);
-		int input = sc.nextInt()-1;
-		AlaCarte temp = (AlaCarte) returnItem(input);
+		int input = sc.nextInt();
+		FoodItem temp = returnItem(input);
+		input = returnTypeint(temp);
 		returnArray(temp).remove(temp);
 		
-		sc.nextLine();
-		System.out.println("What is the name of the updated item?");
+		AlaCarte[] temps = new AlaCarte[3];
+		String cases = null;
+		char type =' ';
+		switch(input){
+		case 1:
+			type = 'M';
+			cases = "Main Course";
+			break;
+		case 2:
+			type = 'D';
+			cases = "Dessert";
+			break;
+		case 3:
+			type = 'R';
+			cases = "Drink";
+			break;
+		case 4:
+			cases = "Package";
+			for (int i=1;i<4;i++){
+				printMenu();
+				System.out.println("Choose an AlaCarte number " + i +" for the package");
+				int j = sc.nextInt();
+				AlaCarte a =(AlaCarte) returnItem(j);
+				temps[i-1] = a;
+			}
+			break;
+		default:
+			//throw new ArrayIndexOutOfBoundsException();
+		}
+		sc.nextLine();//clear buffer
+		System.out.println("What is the name of the updated " + cases + "?");
 		String name = sc.nextLine();
-		System.out.println("What is the description of the updated item?");
+		System.out.println("What is the description of the new " + cases + "?");
 		String description = sc.nextLine();
-		System.out.println("What is the price of the updated item?");
-		int price = sc.nextInt();
-		returnArray(temp).add(new AlaCarte(name,temp.getType(),description,price));
-		sc.close();
+		System.out.println("What is the price of the new " + cases + "?");
+		float price = sc.nextFloat();
+		if (input == 4)
+			createItem(new PackageSet(name,temps,description,price));
+		else
+			createItem(new AlaCarte(name,type,description,price));
 	}
 
 	public FoodItem returnItem(int i){
+		i -= 1;
 		if (i<mains.size())
 			return mains.get(i);
 		i -= mains.size();
@@ -100,5 +195,17 @@ public class Menu {
 			return null;
 	}
 	
+	private int returnTypeint(FoodItem i){
+		if (i instanceof PackageSet)
+			return 4;
+		else if (((AlaCarte) i).getType() == 'M')
+			return 1;
+		else if (((AlaCarte) i).getType() == 'R')
+			return 3;
+		else if (((AlaCarte) i).getType() == 'D')
+			return 2;
+		else
+			return 0;
+	}
 
 }

@@ -11,14 +11,18 @@ public class AlaCarte extends FoodItem{
 	@Override
 	public void getDetails() {
 		// TODO Auto-generated method stub
-		System.out.println(this.name +"\t"+ this.type +"\t"+ this.description +"\t"+ this.price);
+		System.out.println(this.name +"\t"+ this.description +"\t"+ this.price);
 	}
 	
 	public char getType(){
 		return type;
 	}
 	
-	public String getName(){
+	/*public String getName(){
 		return name;
 	}
+	
+	public String getDescription(){
+		return description;
+	}*/
 }
